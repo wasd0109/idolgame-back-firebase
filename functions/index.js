@@ -1,12 +1,14 @@
 const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 const app = require('express')();
+const cors = require('cors');
 const firebase = require('firebase');
 const initializeFirebase = require('./firebaseInit');
 const generatePlayer = require('./controllers/generatePlayer');
 
 initializeFirebase();
 admin.initializeApp();
+app.use(cors({ origin: true }));
 
 const db = admin.firestore();
 
@@ -17,13 +19,15 @@ const isEmpty = (text) => {
 app.post('/register', (req, res) => {
   const { email, password, confirmPassword, playerName } = req.body;
   let error = {};
-  console.log('abcs');
   if (isEmpty(email)) error.email = 'Must not be empty';
   if (isEmpty(password)) error.password = 'Must not be empty';
   if (isEmpty(playerName)) error.playerName = 'Must not be empty';
+  if (password !== confirmPassword)
+    error.confirmPassword = "Password don't match";
   if (Object.keys(error).length) {
-    return res.json(error);
+    return res.status(400).json(error);
   }
+
   let userId = '';
   db.doc(`/players/${playerName}`)
     .get()
@@ -45,7 +49,7 @@ app.post('/register', (req, res) => {
             return db
               .doc(`/players/${playerName}`)
               .set(player)
-              .then(() => res.status(201).json(token))
+              .then(() => res.status(201).json({ token, userId }))
               .catch((err) => console.log(err));
           })
           .catch((err) => {
@@ -57,16 +61,6 @@ app.post('/register', (req, res) => {
           });
       }
     });
-  // .then((userCredential) => {
-  //   var user = userCredential.user;
-  //   db.collection('users').doc('playerName').create();
-  //   res.json(user);
-  // })
-  // .catch((error) => {
-  //   var errorCode = error.code;
-  //   var errorMessage = error.message;
-  //   res.json(error);
-  // });
 });
 
 app.get('/players', async (req, res) => {
@@ -80,6 +74,39 @@ app.get('/players', async (req, res) => {
   }
 });
 
-app.post('');
+app.get('/profile', async (req, res) => {
+  const { userId } = req.body;
+  try {
+    const data = await db
+      .collection('players')
+      .where('uid', '==', userId)
+      .get();
+    const player = data.docs[0].data();
+    return res.json(player);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+});
+
+app.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+  let error = {};
+  let userId;
+  if (isEmpty(email)) error.email = 'Must not be empty';
+  if (isEmpty(password)) error.password = 'Must not be empty';
+  if (Object.keys(error).length) {
+    return res.status(400).json(error);
+  }
+  try {
+    const data = await firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password);
+    const token = await data.user.getIdToken();
+    userId = data.user.uid;
+    res.status(200).json({ token, userId });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 exports.api = functions.https.onRequest(app);
