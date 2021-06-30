@@ -1,7 +1,7 @@
 const { validateRegister, validateLogin } = require('../utils/validators');
 const firebase = require('firebase');
 const generatePlayer = require('./generatePlayer');
-const initializeFirebase = require('../utils/firebaseInit');
+const { initializeFirebase } = require('../utils/firebaseInit');
 const { db } = require('../utils/admin');
 initializeFirebase();
 

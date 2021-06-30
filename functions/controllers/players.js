@@ -13,9 +13,7 @@ exports.getPlayers = async (req, res) => {
 };
 
 exports.profile = async (req, res) => {
-  console.log(req.user.uId);
   const { uid } = req.user;
-  console.log(uid);
   try {
     const data = await db
       .collection('players')
