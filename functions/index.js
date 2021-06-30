@@ -9,7 +9,7 @@ app.use(cors({ origin: true }));
 
 app.post('/register', register);
 
-app.get('/players', getPlayers);
+app.get('/players', FBAuth, getPlayers);
 
 app.get('/profile', FBAuth, profile);
 
