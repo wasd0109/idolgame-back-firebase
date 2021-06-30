@@ -25,7 +25,7 @@ exports.login = async (req, res) => {
   }
 };
 
-exports.register = (req, res) => {
+exports.register = async (req, res) => {
   const { email, password, confirmPassword, playerName } = req.body;
   const validation = validateRegister({
     email,
@@ -37,37 +37,55 @@ exports.register = (req, res) => {
     return res.status(400).json(validation.error);
   }
   let userId = '';
-  db.doc(`/players/${playerName}`)
-    .get()
-    .then((doc) => {
-      if (doc.exists) {
-        return res.status(400).json({ error: 'Player name already taken' });
-      } else {
-        return firebase
-          .auth()
-          .createUserWithEmailAndPassword(email, password)
-          .then((data) => {
-            userId = data.user.uid;
-            return data.user.getIdToken();
-          })
-          .then((token) => {
-            const player = generatePlayer(playerName, userId);
-            return db
-              .doc(`/players/${playerName}`)
-              .set(player)
-              .then(() => res.status(201).json({ token }))
-              .catch((err) => console.log(err));
-          })
-          .catch((err) => {
-            if (err.code == 'auth/email-already-in-use') {
-              return res
-                .status(400)
-                .json({ error: 'Email already registered' });
-            } else if (err.code == 'auth/weak-password');
-            {
-              return res.status(400).json({ error: 'Password too short' });
-            }
-          });
+  let data = {};
+  const doc = await db.doc(`/players/${playerName}`).get();
+  if (doc.exists) {
+    return res.status(400).json({ error: 'Player name already taken' });
+  } else {
+    try {
+      data = await firebase
+        .auth()
+        .createUserWithEmailAndPassword(email, password);
+    } catch (err) {
+      if (err.code == 'auth/email-already-in-use') {
+        return res.status(400).json({ error: 'Email already registered' });
+      } else if (err.code == 'auth/weak-password');
+      {
+        return res.status(400).json({ error: 'Password too short' });
       }
-    });
+    }
+    userId = data.user.uid;
+    try {
+      const token = await data.user.getIdToken();
+      const player = generatePlayer(playerName, userId);
+      await db.doc(`/players/${playerName}`).set(player);
+      return res.status(201).json({ token });
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  // db.doc(`/players/${playerName}`)
+  //   .get()
+  //   .then((doc) => {
+  //     if (doc.exists) {
+  //       return res.status(400).json({ error: 'Player name already taken' });
+  //     } else {
+  //       return firebase
+  //         .auth()
+  //         .createUserWithEmailAndPassword(email, password)
+  //         .then((data) => {
+  //           userId = data.user.uid;
+  //           return data.user.getIdToken();
+  //         })
+  //         .then((token) => {
+  //           const player = generatePlayer(playerName, userId);
+  //           return db
+  //             .doc(`/players/${playerName}`)
+  //             .set(player)
+  //             .then(() => res.status(201).json({ token }))
+  //             .catch((err) => console.log(err));
+  //         })
+  //         .catch((err) => {});
+  //     }
+  //   });
 };
