@@ -5,6 +5,7 @@ exports.getPlayers = async (req, res) => {
     const data = await db.collection('players').get();
     let players = [];
     data.forEach((doc) => players.push(doc.data()));
+    console.log(players);
     res.json(players);
   } catch (err) {
     console.log(err);
