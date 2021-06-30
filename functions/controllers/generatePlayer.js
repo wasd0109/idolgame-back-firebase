@@ -13,9 +13,10 @@ const initialStats = {
   exp: 0,
   attack: 20,
   defense: 15,
-  magicAttack: 30,
-  magicDefense: 25,
+  magic_attack: 30,
+  magic_defense: 25,
   agility: 10,
+  title: 'Rookie',
 };
 
 const generatePlayer = (playerName, uid) => {
