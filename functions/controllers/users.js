@@ -64,28 +64,4 @@ exports.register = async (req, res) => {
       console.log(err);
     }
   }
-  // db.doc(`/players/${playerName}`)
-  //   .get()
-  //   .then((doc) => {
-  //     if (doc.exists) {
-  //       return res.status(400).json({ error: 'Player name already taken' });
-  //     } else {
-  //       return firebase
-  //         .auth()
-  //         .createUserWithEmailAndPassword(email, password)
-  //         .then((data) => {
-  //           userId = data.user.uid;
-  //           return data.user.getIdToken();
-  //         })
-  //         .then((token) => {
-  //           const player = generatePlayer(playerName, userId);
-  //           return db
-  //             .doc(`/players/${playerName}`)
-  //             .set(player)
-  //             .then(() => res.status(201).json({ token }))
-  //             .catch((err) => console.log(err));
-  //         })
-  //         .catch((err) => {});
-  //     }
-  //   });
 };
