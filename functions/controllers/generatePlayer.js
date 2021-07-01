@@ -17,6 +17,7 @@ const initialStats = {
   magic_defense: 25,
   agility: 10,
   title: 'Rookie',
+  bossProgress: 0,
 };
 
 const generatePlayer = (playerName, uid) => {
