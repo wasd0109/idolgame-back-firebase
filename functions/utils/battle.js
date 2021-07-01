@@ -1,3 +1,9 @@
+const damageFormula = (attack, defense) => {
+  return Math.floor(
+    Math.random() * attack * 1.1 - Math.random() * defense * 0.8
+  );
+};
+
 const calculateBattleResult = (attackMode, attackingStats, defendingStats) => {
   let damage;
   const attackAgility = attackingStats.agility;
@@ -13,26 +19,32 @@ const calculateBattleResult = (attackMode, attackingStats, defendingStats) => {
     defense = defendingStats.magic_defense;
   }
   // Implement luck later (headache)
-  damage =
-    Math.floor(Math.random() * attack) - Math.floor(Math.random() * defense);
-  if (damage <= 0 || Math.random() * defendAgility > attackAgility * 0.9) {
+  damage = damageFormula(attack, defense);
+  console.log(damage);
+  if (damage <= 0) {
     return 0;
+  } else if (Math.random() * defendAgility > attackAgility * 0.9) {
+    return -1;
   }
   return damage;
 };
 
 const generatePlayerMessage = (damage) => {
-  if (damage) {
-    return `You dealt ${damage} points of damage!`;
-  } else {
+  if (damage >= 0) {
+    return damage
+      ? `You dealt ${damage} points of damage!`
+      : 'The enemy blocked your attack!';
+  } else if (damage == -1) {
     return 'The enemy evaded the attack!';
   }
 };
 
 const generateEnemyMessage = (damage) => {
-  if (damage) {
-    return `You received ${damage} points of damage!`;
-  } else {
+  if (damage >= 0) {
+    return damage
+      ? `You received ${damage} points of damage!`
+      : 'You blocked the enemy attack!';
+  } else if (damage == -1) {
     return 'You evaded the attack!';
   }
 };
