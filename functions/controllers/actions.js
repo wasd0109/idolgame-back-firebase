@@ -58,12 +58,12 @@ const handleActionResults = (stats) => {
   let message;
   if (levelUp) {
     const statsIncrease = {
-      HPIncrease: Math.floor(Math.random() * 15),
-      attackIncrease: Math.floor(Math.random() * 5),
-      defenseIncrease: Math.floor(Math.random() * 5),
-      magic_attackIncrease: Math.floor(Math.random() * 5),
-      magic_defenseIncrease: Math.floor(Math.random() * 5),
-      agilityIncrease: Math.floor(Math.random() * 3),
+      HPIncrease: Math.floor(Math.random() * 15) + 1,
+      attackIncrease: Math.floor(Math.random() * 5) + 1,
+      defenseIncrease: Math.floor(Math.random() * 5) + 1,
+      magic_attackIncrease: Math.floor(Math.random() * 5) + 1,
+      magic_defenseIncrease: Math.floor(Math.random() * 5) + 1,
+      agilityIncrease: Math.floor(Math.random() * 3) + 1,
       level: newLevel,
       exp: newEXP,
     };
