@@ -15,12 +15,12 @@ app.get('/players', FBAuth, getPlayers);
 
 app.get('/profile', FBAuth, profile);
 
-app.get('/bossData', bossData);
+app.get('/bossData', FBAuth, bossData);
 
 app.post('/login', login);
 
 app.post('/actions', FBAuth, actions);
 
-app.post('/bossFight', bossFight);
+app.post('/bossFight', FBAuth, bossFight);
 
 exports.api = functions.https.onRequest(app);

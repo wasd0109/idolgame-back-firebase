@@ -58,12 +58,12 @@ exports.battle = (playerStats, enemyStats, attackMode, turnNumber) => {
   if (turnNumber % 2 == 0) {
     damage = calculateBattleResult(attackMode, playerStats, enemyStats);
     message = generatePlayerMessage(damage);
-    enemyHP -= damage;
+    if (damage > 0) enemyHP -= damage;
     result = { message, enemyHP };
   } else if (turnNumber % 2 == 1) {
     damage = calculateBattleResult(attackMode, enemyStats, playerStats);
     message = generateEnemyMessage(damage);
-    playerHP -= damage;
+    if (damage > 0) playerHP -= damage;
     result = { message, playerHP };
   }
   if (enemyHP <= 0) {
