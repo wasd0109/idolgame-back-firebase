@@ -52,18 +52,21 @@ const generateResponseMessage = (exp, newEXP, statsIncrease = null) => {
 };
 const handleActionResults = (stats) => {
   const minimumEXP = 5;
+  const HPModifier = 15;
+  const fightStatsModifier = 5;
+  const agilityModifier = 3;
   const newEXP = stats.exp + minimumEXP + Math.floor(Math.random() * 10);
   const { newLevel, levelUp } = isLevelUp(newEXP, stats.level);
   let newStats;
   let message;
   if (levelUp) {
     const statsIncrease = {
-      HPIncrease: Math.floor(Math.random() * 15) + 1,
-      attackIncrease: Math.floor(Math.random() * 5) + 1,
-      defenseIncrease: Math.floor(Math.random() * 5) + 1,
-      magic_attackIncrease: Math.floor(Math.random() * 5) + 1,
-      magic_defenseIncrease: Math.floor(Math.random() * 5) + 1,
-      agilityIncrease: Math.floor(Math.random() * 3) + 1,
+      HPIncrease: Math.floor(Math.random() * HPModifier) + 1,
+      attackIncrease: Math.floor(Math.random() * fightStatsModifier) + 1,
+      defenseIncrease: Math.floor(Math.random() * fightStatsModifier) + 1,
+      magic_attackIncrease: Math.floor(Math.random() * fightStatsModifier) + 1,
+      magic_defenseIncrease: Math.floor(Math.random() * fightStatsModifier) + 1,
+      agilityIncrease: Math.floor(Math.random() * agilityModifier) + 1,
       level: newLevel,
       exp: newEXP,
     };
